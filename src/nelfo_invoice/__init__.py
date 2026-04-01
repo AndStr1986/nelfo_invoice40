@@ -1,2 +1,1 @@
-def hello() -> str:
-    return "Hello from nelfo-invoice!"
+from nelfo_invoice.nelfo_invoice40 import NelfoInvoice40
