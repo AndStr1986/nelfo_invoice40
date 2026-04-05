@@ -1,0 +1,328 @@
+EFO/NELFO Fakturaformat, versjon 4.0
+
+Datafilen er en tegnseparert tekstfil med variabel postlengde, som inneholder fem (5) forskjellige typer
+dataposter.
+
+Det skal forefinnes kun en (1) Faktura Sending Hodepost pr. fil, og som skal ligge som første post i filen.
+Det skal forefinnes kun en (1) Faktura Sending Sluttpost pr. fil, og som skal ligge som siste post i filen.
+Det skal forefinnes kun en (1) hodepost og en (1) avslutningspost pr. faktura, og minst en linjepost pr. faktura.
+Det kan forefinnes flere fakturaer (og derved også hodeposter) i en fil.
+Postene i filen skal skrives sekvensielt. Linjepostene til en faktura skal følge umiddelbart etter hodeposten.
+Eventuelle fritekstposter skrives sekvensielt, etter den linjepost de tilhører, alternativt rett etter hodepost (gjelder
+da hele fakturaen). Avslutningspost skrives etter siste linjepost, alternativt fritekstlinje, og før neste hodepost.
+
+Fakturafilen skal inneholde en eller flere komplette fakturaer til en Kjøper fra en Selger.
+Fakturafilen anbefales ikke brukt til samlefakturaer (fakturaer som omfatter flere ordrer).
+
+Tegnsett skal være Windows ANSI (CP 1252) eller ISO 8859-1.
+Poster skilles med tegnene for CR+LF (retur+linjeskift).
+
+Som feltseparator benyttes semikolon (;). Felter med udefinert verdi, eller felter som ikke er i bruk, fylles ikke
+ut.
+Det skal skrives feltseparator for samtlige felt.
+Semikolon tillates ikke benyttet som vanlig tegn i noen av feltene i ordrebekreftelsesfilen.
+
+Filnavn skal alltid begynne med F4.
+
+Filformatet administreres av Elektroforeningen (EFO) og NELFO.
+
+
+
+Kontaktperson NELFO                                            Kontaktperson EFO
+Thor Nilsen                                                    Øystein Dobbe
+NELFO                                                          Elektroforeningen
+Postboks 5467 Majorstua                                        Drammensveien 30
+0305 OSLO                                                      Postboks 2864 Solli
+Tlf. sentralbord: + 47 23 08 77 00                             0230 OSLO
+Tlf. direkte: + 47 23 08 77 38                                 Tlf.: + 47 23 13 12 50
+Faks.: + 47 23 08 77 01                                        Fax: + 47 23 13 12 51
+E-post: thorn@nelfo.no                                         E-post: oystein.dobbe@efo.no
+
+
+
+
+E-NFaktura4.0                                              1
+Posttype FH - Faktura Sending Hodepost
+Felt- Feltnavn      Maks. Data- Ant. Må / Kommentarer
+ nr.                felt- format Des. Kan
+                    lengde
+       PostType                           Alltid FH=Faktura avsender for alle påfølgende fakturaer
+   1                     2 A      -    M
+       Format                                 Alltid 'EFONELFO'
+   2                     8   A      -     M
+       Versjon                                Versjonsnummer på format X.Y. Alltid lik '4.0'
+   3                     3   A      -     M
+       SelgersID                              Selgers foretaksnummer, eks: 'NO123456789MVA'
+   4                    14   A      -     M
+       ProdDato                               Produksjonsdato. Format: ÅÅÅÅMMDD.
+   5                     8   N      0     M
+   6 SFirmaNavn         35   A      -     M   Selgers firmanavn
+   7 SAdr1              35   A      -     K   Selgers adresse1
+   8 SAdr2              35   A      -     K   Selgers adresse2
+   9 SPostNr             9   A      -     M   Selgers postnummer.
+  10 SPostSted          35   A      -     M   Selgers poststed.
+  11 SLandK              2   A      -     K   Selgers landkode, jfr ISO 3166. Eks: "NO"=Norge
+
+
+
+Posttype FF - Faktura Hodepost
+Felt- Feltnavn      Maks. Data- Ant. Må / Kommentarer
+ nr.                felt- format Des. Kan
+                    lengde
+   1 PostType             2 A     -    M Alltid FF=Faktura Hodepost.. En post pr faktura
+   2 FaktNr               8 A     -    M Selgers fakturanummer.
+   3 Sign                 1 A     0    M Dokumenttype/fortegn. Viser om feltet "FakTot" er positivt eller
+                                          negativt, og derved om dokumentet er en faktura eller en
+                                          kreditnota. Se også kommentarseksjon.
+                                          + = Faktura
+                                          - = Kreditnota
+   4 DelFak               1 A     -    K Markerer om fakturaen anses som sluttfaktura eller delfaktura.
+                                          1 = delfaktura
+                                          Alle andre verdier, også tomt felt, = sluttfaktura.
+   5 KjøpersID           14 A     -    K Kjøpers foretaksnummer
+   6 SOrdNr              10 A     -    M Selger ordrenummer.
+   7 BestNr              10 A     -    K Kjøpers bestillingsnummer. Må fylles ut dersom det er fylt ut på
+                                          tilhørende bestilling.
+   8 KundeNr             10 A     -    M Kjøpers kundenr, oppgitt av selger
+     FaktDato                             Fakturadato. Format: ÅÅÅÅMMDD.
+   9                      8 N     0    M
+  10 ForfallsDato        8   N      0     M   Forfallsdato. Format: ÅÅÅÅMMDD.
+  11 FaktUMoms          11   N      2     M   Sum netto før moms. For sjekk av momsverdi.
+  12 Moms               11   N      2     M   Sum merverdiavgift av fakturatotal.
+  13 ØreAvr             11   N      2     M   Øreavrunding for fakturaen.
+  14 ØreAvrSign          1   A      1     M   Fortegn for øreavrunding.
+                                              + = positiv øreavrunding (å regne som rabatt for kjøper).
+                                              - = negativ øreavrunding (å regne som tillegg for kjøper).
+
+
+
+E-NFaktura4.0                                     2
+  15 FakTot        11   N   2   M   Fakturatotal, inkl. MVA
+  16 Valuta         3   A   -   M   Valutakode jfr. ISO 4217. Eks: "NOK"=Norske kroner
+  17 AvtaleIDMrk    1   A   -   K   R=Rabattavtalenummer
+                                    T=Tilbudsnummer
+                                    P=Prosjektnummer
+                                    Angir hva slags type AvtaleID som er brukt.
+  18 AvtaleID      10   A   -   K   Henvisning til Selgers rabattavtale, tilbudsnr, eller prosjektnr
+                                    oppgitt av Selger.
+  19 KOrdNr        10   A   -   K   Kjøpers ordrenummer, som brukes mot Kjøpers kunde. Må fylles
+                                    ut dersom det er fylt ut på tilhørende bestilling.
+  20 KundAvd       10   A   -   K   Kjøpers kunde id., oppgitt av kjøper. For å skille avdelinger eller
+                                    forskjellige kundekonti hos kjøper.
+  21 ProsjektNr    10   A   -   K   Kjøpers prosjektnummer. Må fylles ut dersom det er fylt ut på
+                                    tilhørende bestilling.
+       KLagerMrk                    E=EAN lokasjonsnummer brukt i KLager.
+  22                1   A   -   K
+                                    Ikke utfylt=Udefinert
+  23 KLager        14   A   -   K   Kjøpers lager. Må fylles ut dersom det er fylt ut på tilhørende
+                                    bestilling. EAN lokasjonsnummer kan benyttes, men bruk av dette
+                                    må avtales på forhånd mellom kjøper og selger.
+  24 EksternRef    10   A   -   K   Ekstern referanse, oppgitt av kjøper. Må fylles ut dersom det er fylt
+                                    ut på tilhørende bestilling.
+  25 KjøpersRef    25   A   -   K   Kjøpers øvrige referanse. Fritekst. Må fylles ut dersom det er fylt
+                                    ut på tilhørende bestilling.
+  26 SelgersRef    25   A   -   K   Selgers referanse.
+  27 Merket        25   A   -   K   Merkingstekst som skal skrives på pakke-etikett ved leveranse. Må
+                                    fylles ut dersom det er fylt ut på tilhørende bestilling.
+  28 BestOpp        2   A   -   K   Kode for bestillingens opprinnelse. Se beskrivelse av bestilling for
+                                    lovlige verdier.
+  29 LevId         10   A   -   K   Selgerens nummer hos kjøper.
+  30 PakSed         8   A   -   K   Selgerens pakkseddelnummer.
+  31 KID           27   A   -   K   Selgers KID-nr for fakturaen.
+  32 Konto         11   N   0   K   Selgers kontonummer (bank / post)
+     LAdrLok                        EAN lokasjonsnummer hvis finnes som leveringsadresse. Bruk av
+  33               14   A   -   K
+                                    lokasjonsnr. må avtales på forhånd mellom kjøper og selger.
+  34 LFirmaNavn    35   A   -   K   Varemottakers navn
+  35 LAdr1         35   A   -   K   Varemottakers adresse1
+  36 LAdr2         35   A   -   K   Varemottakers adresse2
+  37 LPostNr        9   A   -   K   Varemottakers postnummer
+  38 LPostSted     35   A   -   K   Varemottakers poststed
+  39 LLandK         2   A   -   K   Varemottakers landkode, jfr ISO 3166. Eks: "NO"=Norge
+  40 KFirmaNavn    35   A   -   K   Kjøpers firmanavn
+  41 KAdr1         35   A   -   K   Kjøpers adresse1
+  42 KAdr2         35   A   -   K   Kjøpers adresse2
+  43 KPostNr        9   A   -   K   Kjøpers postnummer
+  44 KPostSted     35   A   -   K   Kjøpers poststed
+  45 KLandK         2   A   -   K   Kjøpers landkode, jfr ISO 3166. Eks: "NO"=Norge
+  46 KNavn         35   A   -   K   Kjøpers kontaktperson navn
+  47 FFirmaNavn    35   A   -   M   Fakturamottakers navn
+  48 FAdr1         35   A   -   K   Fakturamottakers adresse1
+  49 FAdr2         35   A   -   K   Fakturamottakers adresse2
+  50 FPostNr        9   A   -   M   Fakturamottakers postnummer
+
+
+E-NFaktura4.0                           3
+  51 FPostSted         35   A      -     M    Fakturamottakers poststed
+  52 FLandK             2   A      -     K    Fakturamottakers landkode, jfr ISO 3166. Eks: "NO"=Norge
+  53 FKundeNr          10   A      -     K    Fakturamottakers kundenr, oppgitt av selger. Brukes når
+                                              fakturamottakers kundenr. er forskjellig fra kjøpers kundenr
+                                              oppgitt i KundeNr.
+  54 IBAN              15   A      -     K    Selgers IBAN-kode (ref. bank-kontonr.).
+  55 SWIFT             15   A      -     K    Selgers BIC/SWIFT-kode (ref. bank-forbindelse).
+
+
+Posttype FL - Faktura Linjepost
+Felt- Feltnavn     Maks. Data- Ant. Må / Kommentarer
+ nr.               felt- format Des. Kan
+                   lengde
+   1 PostType            2 A     -    M Alltid FL=Faktura Linjepost
+   2 LinjeNrFa           4 N     0    K Linjenummer på faktura.
+   3 BestNr             10 A     -    K Kjøpers bestillingsnr. Fylles ut hvis avvik fra Fakturahode (FF).
+   4 LinjeNrBe           4 A     -    K Referanse til linjenummer på bestilling.
+   5 VareMrk             1 N     0    M 0=Ukjent, 1=Elnummer, 2=EAN, 3=Produsentens varenr, 4=NRF
+                                         nummer, 9=Tilleggsvare (se kommentarseksjon)
+   6 VareNr             14 A     -    M Produktnummer. (Se VareMrk). Venstretilles med etterfølgende
+                                         blanke.
+   7 AntLev              9 N     2    M Levert antall. Alltid positivt, også ved retur. 2 desimaler. Oppgis
+                                         uten desimaltegn.
+   8 PrisEnhet           3 N     0    M Varens prisenhet. Se beskrivelse i vareformat. UN Commom
+                                         Code.
+   9 EnhetsPris         10 N     2    M Pris pr. oppgitt PrisEnhet. 2 desimaler. Oppgis uten desimaltegn.
+  10 Mva                 4 N     2    M Mva-prosentsats. 2 desimaler. Oppgis uten desimaltegn.
+  11 Rab1P               4 N     2    K Rabattsats i prosent av oppgitt enhetspris. 2 desimaler. Oppgis uten
+                                         desimaltegn.
+                                         Eks. '1550' for 15,50% rabatt.
+  12 Rab1Bel            11 N     2    K Rabatt i beløp. (Se Rab1P). Oppgis uten desimaltegn.
+  13 Rab2P               4 N     2    K Rabattsats i prosent. Beregningsgrunnlag er brutto linjesum
+                                         fratrukket "Rab1Bel". 2 desimaler. Oppgis uten desimaltegn.
+  14 Rab2Bel            11 N     2    K Rabatt i beløp. (Se Rab2P). Oppgis uten desimaltegn.
+  15 TilleggP            4 N     2    K Tillegg i prosent. 2 desimaler. Oppgis uten desimaltegn.
+  16 TilleggBel         11 N     2    K Tilleggsbeløp. (Se TilleggP). Oppgis uten desimaltegn.
+  17 AvgiftP             4 N     2    K Avgift i prosent. 2 desimaler. Oppgis uten desimaltegn. Eks.
+                                         Miljøavgift, metall.
+  18 AvgiftBel          11 N     2    K Avgiftsbeløp. (Se AvgiftP). Oppgis uten desimaltegn.
+  19 Beløp              11 N     2    M Netto varelinjebeløp inkl. rabatter og tillegg.
+  20 KVareNr            25 A     -    K Kjøpers varenummer.
+  21 VaBetg             30 A     -    K Varebetegnelse (produktets handelsbetegnelse).
+  22 VaBetg 2           30 A     -    K Utfyllende varetekst til VaBetg.
+  23 Sign                1 A     0    K Fortegn for denne varelinjen. Se også kommentarseksjon.
+                                         + = Verdien i feltet "Beløp" er positivt.
+                                         - = Verdien i feltet "Beløp" er negativt.
+  24 KjøpersRef         25 A     -    K Feltet tas kun med dersom det avviker fra KjøpersRef i hodepost.
+  25 PakSed              8 A     -    K Selgerens pakkseddelnummer. Se PakSed i hodepost. Tas kun med
+                                         på linjepost dersom linjens pakkseddelnummer avviker fra verdi i
+                                         hodepost.
+       SLagerMrk                         E=EAN lokasjonsnummer brukt i SLager.
+  26                     1 A     -    K
+                                         Ikke utfylt=Udefinert
+
+
+E-NFaktura4.0                                     4
+  27 SLager                14    A        -     K    Selgers lager. Det lager varen leveres fra. EAN lokasjonsnummer
+                                                     kan benyttes, men bruk av dette må avtales på forhånd mellom
+                                                     kjøper og selger.
+
+
+Posttype FT - Faktura Fritekstlinje
+ Felt Feltnavn        Maks. Data- Ant. Må / Kommentarer
+- nr.                 felt- format Des. Kan
+                      lengde
+   1 PostType               2 A     -    M Alltid FT = Faktura FriTekstlinje
+   2 FriTekst              30 A     -    K Fri tekst.
+
+
+
+
+Posttype FA - Faktura Avslutningspost
+Felt- Feltnavn         Maks. Data- Ant. Må / Kommentarer
+ nr.                   felt- forma Des. Kan
+                       lengd    t
+                       e
+   1 PostType               2 A     -    M Alltid FA=Faktura Avslutningpost
+   2 FaktNr                 8 A     -    M Selgerens fakturanummer.
+   3 AntPos                 5 N     0    K Sum poster/linjer i fakturaen, inklusive fritekstlinjer og
+                                             avslutningspost. Kan brukes av mottaker til å kontrollere faktisk
+                                             antall linjer på fakturaen.
+
+
+
+
+Posttype FS - Faktura Sending Sluttpost
+Felt- Feltnavn         Maks. Data- Ant. Må / Kommentarer
+ nr.                   felt- forma Des. Kan
+                       lengd    t
+                       e
+   1 PostType               2 A     -    M Alltid FS=Faktura. Sending sluttpost
+   2 ProdDato               8 N     0    M Produksjonsdato for fil. Format: ÅÅÅÅMMDD.
+   3 AntFaktura             5 N     0    K Sum Antall fakturaer i sendingen. Kan brukes av mottaker til å
+                                             kontrollere faktisk antall fakturaer i sendingen.
+
+
+Kommentarer
+Feltlengde
+Feltets maksimale lengde. Der feltet også har en minimumslengde fremkommer dette av kommentarfeltet, eller
+av feltets type. (Dato vil for eksempel alltid være på 8 tegn).
+
+Dataformat
+A = Alfanumerisk (alle tegn unntatt semikolon er tillatt).
+N = Numerisk tallverdi (kun tegn fra og med 0 til og med 9 er tillatt).
+Alle felt skal skrives uten innledende og etterfølgende fylltegn, som "0" (null) og " " (blank).
+
+Datoformat
+Dato formatet representerer årstall med 4 siffer. Format: ÅÅÅÅMMDD=20031201=1. desember 2003.
+
+
+
+E-NFaktura4.0                                            5
+Må/Kan
+M = Feltet må alltid ha en verdi. Numeriske "må-felt" uten verdi skal presenteres med en 0 (null).
+K = Feltet kan være tomt (kan utelates). Numeriske "kan-felt" uten verdi skal være tomme.
+
+
+
+Merknader for felter
+Posttype
+Posttype benyttes for å skille de forskjellige dataposter i filen.
+
+KjøpersID / SelgersID
+Kjøper og selger identifiseres med organisasjonsnummer, som skal skrives på formen "NO123456789MVA",
+alternativt "NO123456789" (for selskap som ikke er MVA-pliktig). Alle tegn skal skrives fortløpende, uten
+formateringstegn.
+
+Sign
+"Sign" finnes både på fakturahode og på linjene. "Sign" i hoderecorden viser om dokumenter er en faktura eller
+en kreditnota. "Sign" i hoderecorden viser derfor fortegn på dokumentets totalbeløp.
+"Sign" på linjen viser linjens fortegn. Kreditlinjer skal ha negativ "Sign", debetlinjer (vanlige linjer) skal ha
+positiv "Sign". Dette gjelder både for faktura og kreditnota.
+Eksempel: En kreditnota med 1 varelinje skal ha negativ "Sign" både i hodepost og på linjeposten.
+
+ØreAvrSign
+"ØreAvrSign" finnes bare på fakturahodet, og viser hvilken vei (+ opp eller - ned) evt. øreavrunding er foretatt,
+uansett faktura eller kreditnota.
+
+VareMrk
+Se beskrivelse av VareMrk i vareformatet. Bruk VareMrk 9=Tilleggsvare for å spesifisere avgifter som gjelder
+for hele fakturaen.
+
+Enhetspris, rabatt og tillegg/avgift
+Feltet "Enhetspris" skal alltid være oppgitt pr. enhet / prisenhet.
+Dette gir 3 mulighet for overføring av prisinformasjon:
+     1. Listepris føres i feltet "Enhetspris". Feltene "Rabatt" har ingen definert verdi (blank / null).
+     2. Listepris føres i feltet "Enhetspris". Feltene for "Rabatt" har en definert verdi (rabattsats).
+     3. Nettopris føres i feltet "Enhetspris". Feltene for "Rabatt" har ingen definert verdi (blank / null).
+Verdien i feltene for "Rabatt" skal alltid tolkes som rabatt.
+Verdien i feltene for "Tillegg" og "Avgift" skal alltid tolkes som tillegg. Beløp i feltene "TilleggBel" og
+"AvgiftBel" gjelder for linjen som helhet (ikke for en enkelt enhet).
+Fortegn skal ikke benyttes for rabatt eller tillegg/Avgift.
+Ved bruk av både Rab1 og Rab2 er Rab1 å forstå som rabatt på enhetspris, og Rab2 som rabatt på netto. Satsene
+skal ikke summeres!
+
+Merk!
+Når rabatt, tillegg eller avgift angis i prosent skal tilhørende felt for rabatt-, tillegg- eller avgiftsbeløp fylles ut.
+Eksempel: Brutto linjebeløp: 200,00 kr, rabatt: 60%. Rab1P skal være "6000" og Rab1Bel skal være "12000".
+Når rabatt, tillegg eller avgift utelukkende skal angis som beløp skal tilhørende felt for prosentsats ikke fylles ut.
+
+Merk at det skal være overensstemmelse mellom feltene for PrisEnhet, EnhetsPris, antall, rabatter, tillegg, avgift
+og linjesum. Det skal være mulig for mottaker å kontrollsummere varelinjen og avstemme mot netto linjesum.
+
+Landkoder
+Landkoder skrives i henhold til ISO 3166-1, alfa 2 utgaven. (Samme kodesystem som benyttes av banken ved
+filbasert overføring til utland). Eksempel: "NO" = Norge, "SE" = Sverige.
+
+
+Det henvises til EFO/NELFO Bestillings-format for evt. merknader for andre felt.
+
+
+E-NFaktura4.0                                               6
+

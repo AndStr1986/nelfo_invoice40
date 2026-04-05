@@ -1,1 +1,1 @@
-from nelfo_invoice.nelfo_invoice40 import NelfoInvoice40
+from nelfo_invoice.models import FH
