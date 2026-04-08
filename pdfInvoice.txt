@@ -60,9 +60,8 @@ Felt- Feltnavn      Maks. Data- Ant. Må / Kommentarer
    7 SAdr1              35   A      -     K   Selgers adresse1
    8 SAdr2              35   A      -     K   Selgers adresse2
    9 SPostNr             9   A      -     M   Selgers postnummer.
-  10 SPostSted          35   A      -     M   Selgers poststed.
+  10 SPostSted          35   A      -     M   Selgers poststed. 
   11 SLandK              2   A      -     K   Selgers landkode, jfr ISO 3166. Eks: "NO"=Norge
-
 
 
 Posttype FF - Faktura Hodepost
