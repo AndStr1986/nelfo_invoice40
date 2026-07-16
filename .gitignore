@@ -8,4 +8,9 @@ wheels/
 
 # Virtual environments
 .venv
+venv
 .coverage
+.env
+
+# others
+test_run.py

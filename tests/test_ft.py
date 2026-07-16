@@ -14,10 +14,12 @@ from nelfo_invoice.models import FT
 
 # --- Valid construction ---
 
+
 def test_valid_ft_with_text():
     """FT can be constructed with free text."""
     ft = FT(free_text="Material disc. group 49.7300")
     assert ft.free_text == "Material disc. group 49.7300"
+
 
 def test_valid_ft_without_text():
     """FT can be constructed without free text."""
@@ -27,6 +29,7 @@ def test_valid_ft_without_text():
 
 # --- Fixed fields ---
 
+
 def test_fixed_fields():
     """post_type is always 'FT' regardless of input."""
     ft = FT(free_text="some text")
@@ -34,6 +37,7 @@ def test_fixed_fields():
 
 
 # --- Max length ---
+
 
 def test_free_text_max_length():
     """free_text longer than 30 chars raises a ValidationError."""
