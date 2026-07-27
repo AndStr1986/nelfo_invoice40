@@ -5,13 +5,13 @@ A Python parser for the **EFO/NELFO invoice format** (v4.0) — a semicolon-deli
 ## Installation
 
 ```bash
-pip install git+https://github.com/yourname/nelfo_invoice
+pip install git+https://github.com/AndStr1986/nelfo_invoice40
 ```
 
 Or with uv:
 
 ```bash
-uv add git+https://github.com/yourname/nelfo_invoice
+uv add git+https://github.com/AndStr1986/nelfo_invoice40
 ```
 
 ## Usage
