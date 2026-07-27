@@ -54,7 +54,7 @@ class NelfoInvoiceParser:
         }
 
         for line_number, raw_line in enumerate(self._source, start=1):
-            line_data = raw_line.rstrip("\n").split(";")
+            line_data = raw_line.rstrip("\r\n").split(";")
             line_handler_type = line_data[0]
 
             if handler := handlers.get(line_handler_type):
