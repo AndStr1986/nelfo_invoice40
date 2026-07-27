@@ -4,7 +4,7 @@ from nelfo_invoice import NelfoInvoiceParser
 from nelfo_invoice.models import NelfoFile
 from pathlib import Path
 
-INVOICE_PATH = Path(__file__).parent.parent / "Invoice.txt"
+INVOICE_PATH = Path(__file__).parent / "fixtures" / "sample_invoice.txt"
 
 
 def test_parse_returns_neflo_file():
