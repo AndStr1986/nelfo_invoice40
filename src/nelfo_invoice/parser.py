@@ -13,6 +13,10 @@ from nelfo_invoice.models import (
     FS,
 )
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 class NelfoInvoiceParser:
     def __init__(self, source: IO[str]) -> None:
@@ -49,14 +53,27 @@ class NelfoInvoiceParser:
             "FS": self._handle_file_tail,
         }
 
-        for raw_line in self._source:
+        for line_number, raw_line in enumerate(self._source, start=1):
             line_data = raw_line.rstrip("\n").split(";")
             line_handler_type = line_data[0]
 
             if handler := handlers.get(line_handler_type):
-                result = handler(line_data)
+                logger.debug(
+                    "Line %d: handling %s record", line_number, line_handler_type
+                )
+                try:
+                    result = handler(line_data)
+                except ValueError as exc:
+                    raise ValueError(f"Line {line_number}: {exc}") from exc
                 if isinstance(result, NelfoFile):
                     return result
+
+            else:
+                logger.warning(
+                    "Line %d: unrecognized record type %r, skipping",
+                    line_number,
+                    line_handler_type,
+                )
 
         raise ValueError("File ended without an FS record")
 
@@ -130,7 +147,7 @@ class NelfoInvoiceParser:
     ) -> None:
         if fs_line_count is not None and fs_line_count != file_invoice_count:
             raise ValueError(
-                "Line count from FS and and read invoice lines does not match up"
+                "Line count from FS and read invoice lines does not match up"
             )
 
     def _handle_file_tail(self, line_data: list[str]) -> NelfoFile:

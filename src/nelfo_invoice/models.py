@@ -1,6 +1,7 @@
 from datetime import date
 from typing import Optional, Literal
 from pydantic import BaseModel, Field, field_validator
+from decimal import Decimal
 import pycountry
 
 
@@ -8,6 +9,10 @@ class NelfoBaseLineModel(BaseModel):
     @classmethod
     def from_list(cls, data: list[str]):
         field_names = [name for name in cls.model_fields.keys()]
+        if len(data) > len(field_names):
+            raise ValueError(
+                f"{cls.__name__}: line has {len(data)} fields, excpected at most {len(field_names)}"
+            )
         field_values = [value or None for value in data]
         return cls(**dict(zip(field_names, field_values)))
 
@@ -723,6 +728,22 @@ class NelfoInvoiceLine(BaseModel):
     line: FL
     free_texts: list[FT] = Field(default_factory=list)
 
+    @property
+    def description(self) -> str | None:
+        return self.line.item_description
+
+    @property
+    def quantity(self) -> Decimal:
+        return Decimal(self.line.quantity) / 100
+
+    @property
+    def price(self) -> Decimal:
+        return Decimal(self.line.unit_price) / 100
+
+    @property
+    def total(self) -> Decimal:
+        return Decimal(self.line.line_amount) / 100
+
 
 class NelfoInvoice(BaseModel):
     "Nelfo Faktura — represents a single invoice with header, lines, and optional free text and footer."
@@ -732,8 +753,31 @@ class NelfoInvoice(BaseModel):
     trailer: Optional[FA] = None
 
     @property
-    def line_count(self):
-        return len(self.lines)
+    def total(self) -> Decimal:
+        return Decimal(self.header.invoice_total) / 100
+
+    @property
+    def net_amount(self) -> Decimal:
+        return Decimal(self.header.net_amount_pre_tax) / 100
+
+    @property
+    def vat_amount(self) -> Decimal:
+        return Decimal(self.header.vat_amount) / 100
+
+    @property
+    def invoice_number(self) -> str:
+        return str(self.header.invoice_number)
+
+    @property
+    def is_credit_note(self) -> bool:
+        return self.header.document_sign == "-"
+
+    @property
+    def line_count(self) -> int:
+        return int(len(self.lines))
+
+    def __repr__(self):
+        return f"NelfoInvoice({self.header.invoice_number})"
 
 
 class NelfoFile(BaseModel):
@@ -743,6 +787,36 @@ class NelfoFile(BaseModel):
     body: list[NelfoInvoice]
     trailer: FS
 
+    def to_json(self, filename):
+        with open(filename, "w") as f:
+            f.write(self.model_dump_json(indent=2))
+
+    @property
+    def invoice_numbers(self) -> list[str]:
+        return [invoice.invoice_number for invoice in self.body]
+
+    @property
+    def invoices(self) -> list[NelfoInvoice]:
+        return self.body
+
     @property
     def file_invoice_count(self):
         return len(self.body)
+
+    @property
+    def regular_invoices(self) -> list[NelfoInvoice]:
+        return [inv for inv in self.body if not inv.is_credit_note]
+
+    @property
+    def credit_notes(self) -> list[NelfoInvoice]:
+        return [inv for inv in self.body if inv.is_credit_note]
+
+    def get_invoice(self, invoice_number: str) -> NelfoInvoice | None:
+        return next(
+            (
+                invoice
+                for invoice in self.body
+                if invoice.invoice_number == invoice_number
+            ),
+            None,
+        )
