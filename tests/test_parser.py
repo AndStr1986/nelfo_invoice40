@@ -65,7 +65,6 @@ def test_fa_record_count_mismatch():
     with pytest.raises(ValueError, match="Line count does not match"):
         NelfoInvoiceParser(_to_source(lines)).parse_invoice_file()
 
-
 def test_fa_without_line_items():
     fh, ff, fl, ft, fa, fs = _base_single_invoice_lines()
     with pytest.raises(ValueError, match="no line items"):
@@ -112,3 +111,10 @@ def test_sum_of_line_amounts():
     lines[1] = _set_field(lines[1], 10, "999999")  # FF.invoice_total_amount
     with pytest.raises(ValueError, match="does not match"):
         NelfoInvoiceParser(_to_source(lines)).parse_invoice_file()
+
+def test_invoice_total_not_match_net_amount_pluss_vat_amount():
+    lines = _base_single_invoice_lines()
+    lines[1] = _set_field(lines[1], 14, "999999")
+    with pytest.raises(ValueError, match="does not match"):
+         NelfoInvoiceParser(_to_source(lines)).parse_invoice_file()
+

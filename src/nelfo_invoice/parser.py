@@ -135,6 +135,20 @@ class NelfoInvoiceParser:
                 f"Sum of FL Line_amount ({line_amount_sum}) does not match "
                 f"FF net_amount_pre_tax({self._current_invoice_header.net_amount_pre_tax})"
             )
+        expected_total = (
+            self._current_invoice_header.net_amount_pre_tax
+            + self._current_invoice_header.vat_amount
+        )
+        if self._current_invoice_header.rounding_sign == "+":
+            expected_total += self._current_invoice_header.rounding_amount
+        else:
+            expected_total -= self._current_invoice_header.rounding_amount
+        if expected_total != self._current_invoice_header.invoice_total:
+            raise ValueError(
+                f"FF invoice_total ({self._current_invoice_header.invoice_total}) does not match "
+                f"calculated total ({expected_total})"
+            )
+
         self._file_invoices.append(
             NelfoInvoice(
                 header=self._current_invoice_header,
