@@ -127,6 +127,14 @@ class NelfoInvoiceParser:
                 free_texts=self._current_invoice_line_free_text,
             )
         )
+        line_amount_sum = sum(
+            line.line.line_amount for line in self._current_invoice_lines
+        )
+        if line_amount_sum != self._current_invoice_header.net_amount_pre_tax:
+            raise ValueError(
+                f"Sum of FL Line_amount ({line_amount_sum}) does not match "
+                f"FF net_amount_pre_tax({self._current_invoice_header.net_amount_pre_tax})"
+            )
         self._file_invoices.append(
             NelfoInvoice(
                 header=self._current_invoice_header,

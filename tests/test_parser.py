@@ -105,3 +105,10 @@ def test_error_message_includes_line_number():
     lines[4] = _set_field(lines[4], 2, "99")  # FA is the 5th line in the fixture
     with pytest.raises(ValueError, match=r"^Line 5:"):
         NelfoInvoiceParser(_to_source(lines)).parse_invoice_file()
+
+
+def test_sum_of_line_amounts():
+    lines = _base_single_invoice_lines()
+    lines[1] = _set_field(lines[1], 10, "999999")  # FF.invoice_total_amount
+    with pytest.raises(ValueError, match="does not match"):
+        NelfoInvoiceParser(_to_source(lines)).parse_invoice_file()
