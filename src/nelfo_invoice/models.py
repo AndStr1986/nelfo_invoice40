@@ -427,6 +427,7 @@ class FF(NelfoBaseLineModel):
     def validate_date(cls, value):
         """Parse date string from ÅÅÅÅMMDD format into a date object."""
         if isinstance(value, str):
+            value = value.strip().replace(" ", "").replace("-", "").replace("/", "")
             return date(int(value[:4]), int(value[4:6]), int(value[6:8]))
         return value
 
@@ -710,6 +711,7 @@ class FS(NelfoBaseLineModel):
     def validate_production_date(cls, value):
         """Parse date string from ÅÅÅÅMMDD format into a date object."""
         if isinstance(value, str):
+            value = value.strip().replace(" ", "").replace("-", "").replace("/", "")
             return date(int(value[:4]), int(value[4:6]), int(value[6:8]))
         return value
 
