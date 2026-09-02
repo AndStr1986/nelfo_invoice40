@@ -752,7 +752,7 @@ class NelfoInvoice(BaseModel):
 
     header: FF
     lines: list[NelfoInvoiceLine] = Field(default_factory=list)
-    trailer: Optional[FA] = None
+    trailer: FA
 
     @property
     def total(self) -> Decimal:
